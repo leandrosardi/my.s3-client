@@ -73,13 +73,13 @@ module MyS3
       request['X-API-Key'] = api_key
       request['Content-Type'] = "multipart/form-data; boundary=#{boundary}"
       request.body = build_my_s3_multipart(boundary, relative_path, filename, file_path)
-binding.pry
+
       response = http_request(uri, request)
       json = parse_json(response.body)
       return json if response.is_a?(Net::HTTPSuccess) && json['success']
 
-      message = json.dig('error', 'message') || response.body
-      raise Error, message
+      #message = json.dig('error', 'message') || response.body
+      #raise Error, message
     end
 
     def download_file(path:, filename:, target_path: nil)
