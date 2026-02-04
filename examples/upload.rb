@@ -11,6 +11,7 @@
 require 'pathname'
 require_relative '../lib/my_s3/client'
 require_relative './config'
+require 'pry'
 
 abort "Usage: ruby upload.rb /path/to/local-file [remote/path] [remote-filename]" if ARGV.empty?
 
@@ -43,6 +44,6 @@ begin
 	puts "Server response: #{response.inspect}"
 	puts "Public URL: #{public_url}" if public_url
 rescue MyS3::Client::Error => e
-	warn "Upload failed: #{e.message}"
+	warn "Upload failed: #{e.backtrace.join("\n")}"
 	exit 1
 end

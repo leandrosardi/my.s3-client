@@ -73,7 +73,6 @@ module MyS3
       request['X-API-Key'] = api_key
       request['Content-Type'] = "multipart/form-data; boundary=#{boundary}"
       request.body = build_my_s3_multipart(boundary, relative_path, filename, file_path)
-binding.pry
       response = http_request(uri, request)
       json = parse_json(response.body)
       return json if response.is_a?(Net::HTTPSuccess) && json['success']
@@ -108,8 +107,8 @@ binding.pry
       sanitized.split('/').each do |segment|
         begin
           create_folder(path: current, folder_name: segment)
-        rescue Error => e
-          raise unless e.message =~ /already exists/i
+        rescue Error
+          raise unless folder_exists_in_path?(current, segment)
         end
         current = current.empty? ? segment : [current, segment].join('/')
       end
@@ -217,6 +216,14 @@ binding.pry
       fragments = [normalize_relative_path(path), filename.to_s]
       fragments.reject!(&:empty?)
       fragments.join('/')
+    end
+
+    def folder_exists_in_path?(path, folder_name)
+      listing = list(path: path)
+      directories = listing['directories'] || []
+      directories.any? { |entry| entry['name'].to_s == folder_name.to_s }
+    rescue Error
+      false
     end
   end
 end
