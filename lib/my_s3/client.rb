@@ -78,8 +78,8 @@ module MyS3
       json = parse_json(response.body)
       return json if response.is_a?(Net::HTTPSuccess) && json['success']
 
-      #message = json.dig('error', 'message') || response.body
-      #raise Error, message
+      message = json.dig('error', 'message') || response.body
+      raise Error, message
     end
 
     def download_file(path:, filename:, target_path: nil)
