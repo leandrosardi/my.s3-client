@@ -5,6 +5,5 @@
 /doc/
 /pkg/
 /tmp/
-*.gem
 .DS_Store
 Gemfile.lock
